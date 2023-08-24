@@ -3,12 +3,18 @@ import { useSpring, animated } from "@react-spring/web";
 
 import "./Brick.scss";
 import { useEditorContext } from "../editor/EditorContextProvider";
-import { BrickData, ConnectorData, connectorDataGetId } from "../types";
+import {
+  BrickData,
+  BrickTypes,
+  brickTypesDescriptions,
+  ConnectorData,
+  connectorDataGetDOMId,
+} from "../model";
 
 export const Brick = (props: BrickProps) => {
   const {
     brick,
-    brick: { id, position, label },
+    brick: { id, position, label, type },
   } = props;
 
   const { selectedBrick, setSelectedBrick } = useEditorContext();
@@ -36,24 +42,32 @@ export const Brick = (props: BrickProps) => {
       }`}
       style={{ x, y }}
       onMouseDown={() => {
-        setSelectedBrick(brick);
+        setSelectedBrick(brick as BrickData<BrickTypes>);
       }}
     >
-      <div className="__input-connectors">
-        <Connector data={{ brickId: id, connectorId: "in1" }} />
-        <Connector data={{ brickId: id, connectorId: "in2" }} />
+      <div key="input-connectors-in" className="__input-connectors">
+        {brickTypesDescriptions[type].inputs.map((connectorId) => (
+          <Connector key={connectorId} data={{ brickId: id, connectorId }} />
+        ))}
       </div>
-      <div className="__input-connectors mod--output">
-        <Connector data={{ brickId: id, connectorId: "out1" }} />
+      <div
+        key="input-connectors-out"
+        className="__input-connectors mod--output"
+      >
+        <Connector data={{ brickId: id, connectorId: "out" }} />
       </div>
-      <div className="__drag-anchor" {...bind()} />
-      <h5 className="text-center">{label ?? id}</h5>
+      <div key="drag-anchor" className="__drag-anchor" {...bind()} />
+      <h5>
+        {brickTypesDescriptions[type].icon({ size: 34 })} {label ?? id}
+      </h5>
     </animated.div>
   );
 };
 
 const Connector = (props: ConnectorProps) => {
-  return <div id={connectorDataGetId(props.data)} className="__item no-drag" />;
+  return (
+    <div id={connectorDataGetDOMId(props.data)} className="__item no-drag" />
+  );
 };
 
 type ConnectorProps = {
@@ -61,5 +75,5 @@ type ConnectorProps = {
 };
 
 export type BrickProps = {
-  brick: BrickData;
+  brick: BrickData<BrickTypes>;
 };

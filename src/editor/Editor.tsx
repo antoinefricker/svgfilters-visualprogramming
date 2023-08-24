@@ -15,30 +15,64 @@ export const Editor = () => {
     <div className="svgfilters-editor">
       <EditorContextProvider
         bricks={[
-          { id: "item1", position: [100, 40], label: "test" },
-          { id: "item2", position: [450, 40] },
-          { id: "item3", position: [450, 350] },
-        ]}
-        connections={[
           {
-            out: { brickId: "item1", connectorId: "out1" },
-            in: { brickId: "item2", connectorId: "in1" },
+            id: "item1",
+            position: [50, 50],
+            label: "test",
+            type: "source",
+            config: {
+              type: "mixed",
+            },
+            outputsTo: [{ brickId: "item4", connectorId: "in1" }],
           },
           {
-            out: { brickId: "item1", connectorId: "out1" },
-            in: { brickId: "item3", connectorId: "in1" },
+            id: "item2",
+            position: [50, 250],
+            type: "source",
+            config: {
+              type: "photo",
+            },
+            outputsTo: [{ brickId: "item4", connectorId: "in2" }],
           },
           {
-            out: { brickId: "item2", connectorId: "out1" },
-            in: { brickId: "item1", connectorId: "in1" },
+            id: "item3",
+            position: [350, 50],
+            type: "feFlood",
+            config: {
+              color: "#cc3399",
+              opacity: 1,
+              x: 0,
+              y: 0,
+              width: 100,
+              height: 100,
+            },
+            outputsTo: [{ brickId: "item5", connectorId: "in2" }],
           },
           {
-            out: { brickId: "item3", connectorId: "out1" },
-            in: { brickId: "item2", connectorId: "in2" },
+            id: "item4",
+            position: [350, 250],
+            type: "feBlend",
+            config: {
+              mode: "color-burn",
+              x: 0,
+              y: 0,
+              width: 100,
+              height: 100,
+            },
+            outputsTo: [{ brickId: "item5", connectorId: "in1" }],
           },
           {
-            out: { brickId: "item2", connectorId: "out1" },
-            in: { brickId: "item3", connectorId: "in2" },
+            id: "item5",
+            position: [650, 125],
+            type: "feBlend",
+            config: {
+              mode: "multiply",
+              x: 0,
+              y: 0,
+              width: 100,
+              height: 100,
+            },
+            outputsTo: [],
           },
         ]}
       >
